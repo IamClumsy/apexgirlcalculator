@@ -4,7 +4,7 @@ import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Top Girl Resource Calculator",
+  title: "Mick's Top Girl Resource Calculator",
   description: "Level progression cost calculator for Top Girl",
 };
 

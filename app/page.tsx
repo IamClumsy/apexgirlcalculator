@@ -61,7 +61,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl px-4 py-10">
           <header className="mb-10 text-center">
             <p className="text-sm uppercase tracking-[0.4em] text-slate-400">
-              Top Girl Resource Calculator
+              Mick's Top Girl Resource Calculator
             </p>
             <h1 className="mt-4 text-4xl font-bold text-white">
               Level Progression Cost Calculator
