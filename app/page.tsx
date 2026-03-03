@@ -35,7 +35,7 @@ function CalculatorContent() {
   return (
     <CalculatorLayout>
       {/* Left column */}
-      <div className="space-y-6">
+      <div className="flex flex-col gap-6">
         <HqGlass />
         <CollectionGems />
         <CarParts />
@@ -43,7 +43,7 @@ function CalculatorContent() {
         <Artists />
       </div>
       {/* Right column */}
-      <div className="space-y-6">
+      <div className="flex flex-col gap-6">
         <HqFloors />
         <MuseumExhibits />
         <CarCore />
