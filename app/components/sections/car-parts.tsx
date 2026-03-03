@@ -28,12 +28,13 @@ export function CarParts() {
   }, [tables, from, to]);
 
   return (
-    <CalculatorSection title="Car Parts" note="*Available until SSS1">
+    <CalculatorSection title="Car Parts" note="*Available until SSS1" color="amber">
       <div className="grid grid-cols-2 gap-3">
         <DropdownInput label="From Rank" value={from} options={ranks} onChange={setFrom} />
         <DropdownInput label="To Rank" value={to} options={ranks} onChange={setTo} />
       </div>
       <ResultDisplay
+        accentClass="text-amber-300"
         results={[
           { label: "Parts", value: parts },
           { label: "Advance Drawings", value: drawings },

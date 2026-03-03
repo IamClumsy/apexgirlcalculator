@@ -40,13 +40,14 @@ export function Assets() {
   }, [tables, from, to]);
 
   return (
-    <CalculatorSection title="Assets">
+    <CalculatorSection title="Assets" color="pink">
       <div className="grid grid-cols-2 gap-3">
         <DropdownInput label="Type" value={type} options={TYPE_OPTIONS} onChange={setType} />
         <DropdownInput label="Source" value={source} options={SOURCE_OPTIONS} onChange={setSource} />
       </div>
       <LevelRangeInput from={from} to={to} onFromChange={setFrom} onToChange={setTo} />
       <ResultDisplay
+        accentClass="text-pink-300"
         results={[
           { label: "Asset Coins", value: assetCoins },
           { label: "Extra Assets for Promotion", value: sacrifices },

@@ -31,10 +31,11 @@ export function MuseumExhibits() {
   }, [tables, from, to, tierNum]);
 
   return (
-    <CalculatorSection title="Museum Exhibits">
+    <CalculatorSection title="Museum Exhibits" color="sky">
       <DropdownInput label="Exhibit Room" value={tier} options={ROOM_OPTIONS} onChange={setTier} />
       <LevelRangeInput from={from} to={to} onFromChange={setFrom} onToChange={setTo} />
       <ResultDisplay
+        accentClass="text-sky-300"
         results={[
           {
             label: isHQ ? "HQ Sandstone" : "Sandstone",

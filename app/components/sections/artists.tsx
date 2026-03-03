@@ -23,9 +23,10 @@ export function Artists() {
   }, [tables, from, to]);
 
   return (
-    <CalculatorSection title="Artists">
+    <CalculatorSection title="Artists" color="pink">
       <LevelRangeInput from={from} to={to} onFromChange={setFrom} onToChange={setTo} />
       <ResultDisplay
+        accentClass="text-pink-300"
         results={[
           { label: "EXP Cards", value: exp },
           { label: "Promotion Cards", value: promo },

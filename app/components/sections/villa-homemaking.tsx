@@ -31,10 +31,11 @@ export function VillaHomemaking() {
   }, [tables, from, to, tierNum]);
 
   return (
-    <CalculatorSection title="Villa Homemaking">
+    <CalculatorSection title="Villa Homemaking" color="emerald">
       <DropdownInput label="Tier" value={tier} options={TIER_OPTIONS} onChange={setTier} />
       <LevelRangeInput from={from} to={to} onFromChange={setFrom} onToChange={setTo} />
       <ResultDisplay
+        accentClass="text-emerald-300"
         results={[
           {
             label: isHQ ? "HQ Coins" : "Coins",

@@ -28,12 +28,13 @@ export function VillaSuite() {
   }, [tables, from, to]);
 
   return (
-    <CalculatorSection title="Villa Suite" note="*Until Urban Heights-0">
+    <CalculatorSection title="Villa Suite" note="*Until Urban Heights-0" color="emerald">
       <div className="grid grid-cols-2 gap-3">
         <DropdownInput label="From Villa" value={from} options={villas} onChange={setFrom} />
         <DropdownInput label="To Villa" value={to} options={villas} onChange={setTo} />
       </div>
       <ResultDisplay
+        accentClass="text-emerald-300"
         results={[
           { label: "Drones", value: drones },
           { label: "Design Drafts", value: drafts },

@@ -8,6 +8,7 @@ type ResultItem = {
 
 type Props = {
   results: ResultItem[];
+  accentClass?: string;
 };
 
 function fmt(v: number | null): string {
@@ -15,7 +16,7 @@ function fmt(v: number | null): string {
   return v.toLocaleString();
 }
 
-export function ResultDisplay({ results }: Props) {
+export function ResultDisplay({ results, accentClass }: Props) {
   return (
     <div className="space-y-2">
       <p className="text-xs uppercase tracking-widest text-slate-500">
@@ -26,7 +27,7 @@ export function ResultDisplay({ results }: Props) {
           key={r.label}
           className="flex items-baseline gap-3 rounded-xl border border-slate-800 bg-slate-950/60 px-4 py-2"
         >
-          <span className="text-xl font-semibold text-white tabular-nums">
+          <span className={`text-xl font-semibold tabular-nums ${accentClass ?? "text-white"}`}>
             {fmt(r.value)}
           </span>
           <span className="text-sm text-slate-400">{r.label}</span>

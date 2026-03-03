@@ -18,9 +18,9 @@ export function CollectionGems() {
   }, [tables, from, to]);
 
   return (
-    <CalculatorSection title="Collection Gems">
+    <CalculatorSection title="Collection Gems" color="sky">
       <LevelRangeInput from={from} to={to} onFromChange={setFrom} onToChange={setTo} />
-      <ResultDisplay results={[{ label: "Gems", value: gems }]} />
+      <ResultDisplay results={[{ label: "Gems", value: gems }]} accentClass="text-sky-300" />
     </CalculatorSection>
   );
 }

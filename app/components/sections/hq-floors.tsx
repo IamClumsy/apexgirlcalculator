@@ -34,10 +34,12 @@ export function HqFloors() {
     <CalculatorSection
       title="HQ Floors"
       note={tierNum <= 3 ? "*Use Only for Floors 1, 2 and 3" : undefined}
+      color="violet"
     >
       <DropdownInput label="Floor" value={tier} options={FLOOR_OPTIONS} onChange={setTier} />
       <LevelRangeInput from={from} to={to} onFromChange={setFrom} onToChange={setTo} />
       <ResultDisplay
+        accentClass="text-violet-300"
         results={[
           {
             label: isHQ ? "HQ Wood" : "Wood",

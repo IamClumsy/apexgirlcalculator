@@ -35,10 +35,11 @@ export function CarCore() {
   }, [tables, from, to, tierNum]);
 
   return (
-    <CalculatorSection title="Car Core">
+    <CalculatorSection title="Car Core" color="amber">
       <DropdownInput label="Rank" value={rank} options={RANK_OPTIONS} onChange={setRank} />
       <LevelRangeInput from={from} to={to} onFromChange={setFrom} onToChange={setTo} />
       <ResultDisplay
+        accentClass="text-amber-300"
         results={[
           {
             label: isEnhanced ? "Enhanced Plugs" : "Plugs",
