@@ -34,22 +34,16 @@ function CalculatorContent() {
 
   return (
     <CalculatorLayout>
-      {/* Left column */}
-      <div className="flex flex-col gap-6">
-        <HqGlass />
-        <CollectionGems />
-        <CarParts />
-        <VillaSuite />
-        <Artists />
-      </div>
-      {/* Right column */}
-      <div className="flex flex-col gap-6">
-        <HqFloors />
-        <MuseumExhibits />
-        <CarCore />
-        <VillaHomemaking />
-        <Assets />
-      </div>
+      <HqGlass />
+      <HqFloors />
+      <CollectionGems />
+      <MuseumExhibits />
+      <CarParts />
+      <CarCore />
+      <VillaSuite />
+      <VillaHomemaking />
+      <Artists />
+      <Assets />
     </CalculatorLayout>
   );
 }
