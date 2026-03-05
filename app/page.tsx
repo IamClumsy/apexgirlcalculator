@@ -34,6 +34,8 @@ function CalculatorContent() {
 
   return (
     <CalculatorLayout>
+      <Artists />
+      <Assets />
       <HqGlass />
       <HqFloors />
       <CollectionGems />
@@ -42,8 +44,6 @@ function CalculatorContent() {
       <CarCore />
       <VillaSuite />
       <VillaHomemaking />
-      <Artists />
-      <Assets />
     </CalculatorLayout>
   );
 }
