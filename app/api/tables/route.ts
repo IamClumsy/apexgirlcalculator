@@ -173,6 +173,14 @@ export async function GET() {
         }
       }
 
+      // Read promotion table from Assets sheet (col 14 = fromLevel, col 16 = cost)
+      const promotionCosts = new Map<number, number>();
+      for (const row of assetRaw) {
+        if (Array.isArray(row) && typeof row[14] === "number" && typeof row[16] === "number") {
+          promotionCosts.set(row[14], row[16]);
+        }
+      }
+
       // Find last valid sacrifices accumulation
       result.sacrifices.data = result.sacrifices.data.filter(
         (row) => typeof row[0] === "number" && typeof row[2] === "number"
@@ -194,8 +202,9 @@ export async function GET() {
         if (!perLevel) break;
         for (let i = 0; i < 9; i++) assetAccum[i] += perLevel[i];
         result.assets.data.push([level, ...assetAccum]);
-        // Carry forward last known sacrifice accumulation for new levels
+        // Update sacrifice accumulation using promotion table, then carry forward
         if (level > sacrifBaseLevel) {
+          if (promotionCosts.has(level)) sacrifAccum += promotionCosts.get(level)!;
           result.sacrifices.data.push([level, null, sacrifAccum]);
         }
       }
