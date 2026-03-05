@@ -52,7 +52,7 @@ export default function Home() {
   return (
     <TablesProvider>
       <div className="min-h-screen bg-slate-950 text-white">
-        <div className="mx-auto max-w-6xl px-4 py-10">
+        <main className="mx-auto max-w-6xl px-4 py-10">
           <header className="mb-10 text-center">
             <p className="text-sm uppercase tracking-[0.4em] text-slate-400">
               Mick's Top Girl Resource Calculator
@@ -65,7 +65,7 @@ export default function Home() {
             </p>
           </header>
           <CalculatorContent />
-        </div>
+        </main>
       </div>
     </TablesProvider>
   );
