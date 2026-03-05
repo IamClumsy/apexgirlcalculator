@@ -82,19 +82,36 @@ export async function GET() {
         }
       }
 
+      // Build per-level PROM ACUM from the grouped right-side table (col 3 = range, col 5 = promo total, col 7 = promo accum)
+      const promAccumByLevel = new Map<number, number>();
+      for (const row of artistRaw) {
+        if (!Array.isArray(row)) continue;
+        const rangeStr = row[3];
+        const promCards = row[5];
+        const promAccum = row[7];
+        if (typeof rangeStr !== "string" || typeof promAccum !== "number") continue;
+        const match = rangeStr.match(/^(\d+)\s+to\s+(\d+)$/);
+        if (!match) continue;
+        const rangeStart = parseInt(match[1]);
+        const rangeEnd = parseInt(match[2]);
+        const rangeSize = rangeEnd - rangeStart + 1;
+        const promPerLevel = typeof promCards === "number" ? promCards / rangeSize : 0;
+        const promAccumAtStart = promAccum - (typeof promCards === "number" ? promCards : 0);
+        for (let level = rangeStart; level <= rangeEnd; level++) {
+          promAccumByLevel.set(level, Math.round(promAccumAtStart + promPerLevel * (level - rangeStart + 1)));
+        }
+      }
+
       if (expByLevel.size > 0) {
         // Find the last row with a valid numeric EXP ACUM in the Tables artist data
         let baseLevel = -1;
         let baseExpAccum = 0;
-        let basePromAccum = 0;
         for (const row of result.artists.data) {
           const lvl = row[0];
           const accum = row[2];
-          const prom = row[4];
           if (typeof lvl === "number" && typeof accum === "number" && lvl > baseLevel) {
             baseLevel = lvl;
             baseExpAccum = accum;
-            if (typeof prom === "number") basePromAccum = prom;
           }
         }
 
@@ -110,7 +127,8 @@ export async function GET() {
           const expCard = expByLevel.get(level);
           if (expCard == null) break;
           expAccum += expCard;
-          result.artists.data.push([level, expCard, expAccum, null, basePromAccum]);
+          const promAccum = promAccumByLevel.get(level) ?? 0;
+          result.artists.data.push([level, expCard, expAccum, null, promAccum]);
         }
       }
     }
