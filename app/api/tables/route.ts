@@ -118,11 +118,14 @@ export async function GET() {
           (row) => typeof row[0] === "number" && typeof row[2] === "number"
         );
 
-        // Append new levels from the Artist sheet
+        // Append new levels from the Artist sheet.
+        // The Tables EXP_ACUM convention stores the cumulative at key K using level K+1's EXP
+        // (matching the existing data structure), so vlookupDiff(from-1, to-1) correctly
+        // returns EXP for levels from..to.
         const maxLevel = Math.max(...expByLevel.keys());
         let expAccum = baseExpAccum;
-        for (let level = baseLevel + 1; level <= maxLevel; level++) {
-          const expCard = expByLevel.get(level);
+        for (let level = baseLevel + 1; level < maxLevel; level++) {
+          const expCard = expByLevel.get(level + 1);
           if (expCard == null) break;
           expAccum += expCard;
           const promAccum = promAccumByLevel.get(level) ?? 0;
