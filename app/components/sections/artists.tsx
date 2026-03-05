@@ -10,7 +10,7 @@ import { ResultDisplay } from "../result-display";
 export function Artists() {
   const { tables } = useTables();
   const [from, setFrom] = useState(1);
-  const [to, setTo] = useState(140);
+  const [to, setTo] = useState(160);
 
   const exp = useMemo(() => {
     if (!tables?.artists) return null;

@@ -69,6 +69,52 @@ export async function GET() {
       result[name] = extractRange(raw, rangeDef);
     }
 
+    // Extend artist data with levels from the Artist sheet (new levels beyond Tables data)
+    const artistWs = wb.Sheets["Artist"];
+    if (artistWs && result.artists) {
+      const artistRaw = XLSX.utils.sheet_to_json(artistWs, { header: 1 }) as unknown[][];
+
+      // Collect per-level EXP from Artist sheet (rows where col 0 and col 1 are numbers)
+      const expByLevel = new Map<number, number>();
+      for (const row of artistRaw) {
+        if (Array.isArray(row) && typeof row[0] === "number" && typeof row[1] === "number") {
+          expByLevel.set(row[0], row[1]);
+        }
+      }
+
+      if (expByLevel.size > 0) {
+        // Find the last row with a valid numeric EXP ACUM in the Tables artist data
+        let baseLevel = -1;
+        let baseExpAccum = 0;
+        let basePromAccum = 0;
+        for (const row of result.artists.data) {
+          const lvl = row[0];
+          const accum = row[2];
+          const prom = row[4];
+          if (typeof lvl === "number" && typeof accum === "number" && lvl > baseLevel) {
+            baseLevel = lvl;
+            baseExpAccum = accum;
+            if (typeof prom === "number") basePromAccum = prom;
+          }
+        }
+
+        // Remove any rows with non-numeric EXP ACUM (e.g. the old "MAX" row)
+        result.artists.data = result.artists.data.filter(
+          (row) => typeof row[0] === "number" && typeof row[2] === "number"
+        );
+
+        // Append new levels from the Artist sheet
+        const maxLevel = Math.max(...expByLevel.keys());
+        let expAccum = baseExpAccum;
+        for (let level = baseLevel + 1; level <= maxLevel; level++) {
+          const expCard = expByLevel.get(level);
+          if (expCard == null) break;
+          expAccum += expCard;
+          result.artists.data.push([level, expCard, expAccum, null, basePromAccum]);
+        }
+      }
+    }
+
     return NextResponse.json(result);
   } catch (error) {
     console.error("tables route failed", error);
