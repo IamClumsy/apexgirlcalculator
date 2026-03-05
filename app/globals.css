@@ -35,6 +35,7 @@ body::before {
   background-size: cover;
   background-position: center;
   opacity: 0.88;
+  filter: brightness(0.25);
   z-index: -1;
   pointer-events: none;
 }
