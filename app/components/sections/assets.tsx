@@ -25,7 +25,7 @@ export function Assets() {
   const [type, setType] = useState("Jewelry");
   const [source, setSource] = useState("Standard");
   const [from, setFrom] = useState(32);
-  const [to, setTo] = useState(60);
+  const [to, setTo] = useState(75);
 
   const col = assetCol(type, source);
 

@@ -134,6 +134,73 @@ export async function GET() {
       }
     }
 
+    // Extend assets and sacrifices from the Assets sheet
+    const assetWs = wb.Sheets["Assets"];
+    if (assetWs && result.assets && result.sacrifices) {
+      const assetRaw = XLSX.utils.sheet_to_json(assetWs, { header: 1 }) as unknown[][];
+
+      // Build per-level map from Assets sheet (col 0 = level, skip MAX rows)
+      // Column mapping to Tables row: [StdJew, StdCar, StdProp, AbrJew, AbrCar, AbrProp, 0, AuctCar, AuctProp]
+      const assetsByLevel = new Map<number, number[]>();
+      for (const row of assetRaw) {
+        if (!Array.isArray(row) || typeof row[0] !== "number" || typeof row[1] !== "number") continue;
+        assetsByLevel.set(row[0], [
+          row[1] as number,  // Std Jewelry
+          row[2] as number,  // Std Car
+          row[3] as number,  // Std Property
+          row[6] as number,  // Abroad Jewelry
+          row[7] as number,  // Abroad Car
+          row[8] as number,  // Abroad Property
+          0,                 // Auction Jewelry (n/a)
+          row[11] as number, // Auction Car
+          row[12] as number, // Auction Property
+        ]);
+      }
+
+      // Remove rows with non-numeric values (e.g. empty level 60 row) from assets
+      result.assets.data = result.assets.data.filter(
+        (row) => typeof row[0] === "number" && typeof row[1] === "number"
+      );
+
+      // Find last valid cumulative row for assets
+      let assetBaseLevel = -1;
+      const assetAccum = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+      for (const row of result.assets.data) {
+        const lvl = row[0];
+        if (typeof lvl === "number" && lvl > assetBaseLevel && typeof row[1] === "number") {
+          assetBaseLevel = lvl;
+          for (let i = 0; i < 9; i++) assetAccum[i] = (row[i + 1] as number) ?? 0;
+        }
+      }
+
+      // Find last valid sacrifices accumulation
+      result.sacrifices.data = result.sacrifices.data.filter(
+        (row) => typeof row[0] === "number" && typeof row[2] === "number"
+      );
+      let sacrifBaseLevel = -1;
+      let sacrifAccum = 0;
+      for (const row of result.sacrifices.data) {
+        const lvl = row[0];
+        if (typeof lvl === "number" && lvl > sacrifBaseLevel && typeof row[2] === "number") {
+          sacrifBaseLevel = lvl;
+          sacrifAccum = row[2] as number;
+        }
+      }
+
+      // Append new levels
+      const maxAssetLevel = Math.max(...assetsByLevel.keys());
+      for (let level = assetBaseLevel + 1; level <= maxAssetLevel; level++) {
+        const perLevel = assetsByLevel.get(level);
+        if (!perLevel) break;
+        for (let i = 0; i < 9; i++) assetAccum[i] += perLevel[i];
+        result.assets.data.push([level, ...assetAccum]);
+        // Carry forward last known sacrifice accumulation for new levels
+        if (level > sacrifBaseLevel) {
+          result.sacrifices.data.push([level, null, sacrifAccum]);
+        }
+      }
+    }
+
     return NextResponse.json(result);
   } catch (error) {
     console.error("tables route failed", error);
