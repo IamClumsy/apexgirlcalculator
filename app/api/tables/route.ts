@@ -82,23 +82,21 @@ export async function GET() {
         }
       }
 
-      // Build per-level PROM ACUM from the grouped right-side table (col 3 = range, col 5 = promo total, col 7 = promo accum)
+      // Build per-level PROM ACUM from the grouped right-side table (col 3 = range, col 7 = promo accum)
+      // Follows the step-function pattern in the Tables sheet: keys from rangeStart-1 through rangeEnd-1
+      // all carry the range's cumulative value (matching how existing data is structured).
       const promAccumByLevel = new Map<number, number>();
       for (const row of artistRaw) {
         if (!Array.isArray(row)) continue;
         const rangeStr = row[3];
-        const promCards = row[5];
         const promAccum = row[7];
         if (typeof rangeStr !== "string" || typeof promAccum !== "number") continue;
         const match = rangeStr.match(/^(\d+)\s+to\s+(\d+)$/);
         if (!match) continue;
         const rangeStart = parseInt(match[1]);
         const rangeEnd = parseInt(match[2]);
-        const rangeSize = rangeEnd - rangeStart + 1;
-        const promPerLevel = typeof promCards === "number" ? promCards / rangeSize : 0;
-        const promAccumAtStart = promAccum - (typeof promCards === "number" ? promCards : 0);
-        for (let level = rangeStart; level <= rangeEnd; level++) {
-          promAccumByLevel.set(level, Math.round(promAccumAtStart + promPerLevel * (level - rangeStart + 1)));
+        for (let level = rangeStart - 1; level <= rangeEnd - 1; level++) {
+          promAccumByLevel.set(level, promAccum);
         }
       }
 
