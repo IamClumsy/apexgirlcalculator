@@ -6,6 +6,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Mick's Top Girl Resource Calculator",
   description: "Level progression cost calculator for Top Girl",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
