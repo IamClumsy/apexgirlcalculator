@@ -69,6 +69,46 @@ export async function GET() {
       result[name] = extractRange(raw, rangeDef);
     }
 
+    // Extend glass data from the Glass sheet (new levels beyond Tables data)
+    const glassWs = wb.Sheets["Glass"];
+    if (glassWs && result.glass) {
+      const glassRaw = XLSX.utils.sheet_to_json(glassWs, { header: 1 }) as unknown[][];
+
+      // Collect per-level glass from Glass sheet (rows where col 0 and col 1 are numbers)
+      const glassByLevel = new Map<number, number>();
+      for (const row of glassRaw) {
+        if (Array.isArray(row) && typeof row[0] === "number" && typeof row[1] === "number") {
+          glassByLevel.set(row[0], row[1]);
+        }
+      }
+
+      if (glassByLevel.size > 0) {
+        // Find last row with a valid numeric glass accumulative in Tables data
+        let baseLevel = -1;
+        let baseAccum = 0;
+        for (const row of result.glass.data) {
+          const lvl = row[0];
+          const accum = row[2];
+          if (typeof lvl === "number" && typeof accum === "number" && accum > baseAccum) {
+            baseLevel = lvl;
+            baseAccum = accum;
+          }
+        }
+
+        // Append new levels from the Glass sheet beyond what Tables has
+        // Glass sheet col 0 = level, col 1 = glass per level
+        // Tables accumulative convention: accum[K] = accum[K-1] + glass[K+1] (forward-sum)
+        const maxLevel = Math.max(...glassByLevel.keys());
+        let accum = baseAccum;
+        for (let level = baseLevel + 1; level < maxLevel; level++) {
+          const glassPerLevel = glassByLevel.get(level + 1);
+          if (glassPerLevel == null) break;
+          accum += glassPerLevel;
+          result.glass.data.push([level, glassPerLevel, accum]);
+        }
+      }
+    }
+
     // Extend artist data with levels from the Artist sheet (new levels beyond Tables data)
     const artistWs = wb.Sheets["Artist"];
     if (artistWs && result.artists) {
